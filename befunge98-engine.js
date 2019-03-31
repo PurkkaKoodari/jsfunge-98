@@ -158,6 +158,7 @@ var FungeSpace = function(code) {
     this.posXnegY = [[]];
     this.negXposY = [[]];
     this.negXnegY = [[]];
+    this.modified = false;
     this.doExpansion();
 };
 FungeSpace.prototype.doExpansion = function() {
@@ -228,6 +229,7 @@ FungeSpace.prototype.put = function(pos, value) {
         this.doExpansion();
         this.set(pos, value);
     }
+    this.modified = true;
 };
 FungeSpace.prototype.isAddressable = function(ip) {
     return ip.x >= this.minX && ip.x <= this.maxX && ip.y >= this.minY && ip.y <= this.maxY;
@@ -805,7 +807,7 @@ BefungeEngine.prototype.run = function(internal) {
     for (var count = 0; this.keepRunning && count < (this.delayOn ? 1 : BefungeEngine.RUN_BLOCK_SIZE); count++)
         this.step();
     if (!this.delayOn)
-        this.updateCallback(this);
+        this.updateCallback();
     if (this.keepRunning) {
         var $this = this;
         this.runTimeout = setTimeout(function() {

@@ -51,13 +51,22 @@ window.addEventListener("load", function() {
         });
         reader.readAsText(file, "ISO-8859-1");
     });
-    var codingArea = document.querySelector("#coding"), executionArea = document.querySelector("#execution");
+    var codingArea = document.querySelector("#coding"),
+        executionArea = document.querySelector("#execution"), 
+        aboutBox = document.querySelector("#about");
     var actualHide = function(e) {
         if (window.getComputedStyle(e.target).opacity === "0")
             e.target.style.display = "none";
     };
+    var showFix = function(element) {
+        element.style.display = "block";
+        setTimeout(function() {
+            element.style.opacity = 1;
+        }, 20);
+    };
     codingArea.addEventListener("transitionend", actualHide);
     executionArea.addEventListener("transitionend", actualHide);
+    aboutBox.addEventListener("transitionend", actualHide);
     var filename = "online.b98", engine = null, delay = false, delayMs = 500, interactive = true,
         debug = false, extraArgs = false, output = "", inputFocusInterval = 0,
         spaceHeight = 300, spaceX = 0, spaceY = 0, activeCell, manualPos = false;
@@ -67,7 +76,7 @@ window.addEventListener("load", function() {
         document.querySelector("#run").style.display = "inline-block";
         document.querySelector("#step").style.display = "inline-block";
         document.querySelector("#pause").style.display = "none";
-        window.engine = engine = new BefungeEngine(code, interactive ? null : input);
+        engine = new BefungeEngine(code, interactive ? null : input);
         engine.delayOn = delay;
         engine.delay = delayMs;
         engine.filename = filename;
@@ -100,8 +109,11 @@ window.addEventListener("load", function() {
                 updateFungeSpace();
             }
         };
-        updateStack();
-        updateFungeSpace();
+        engine.fungeSpace.modified = true;
+        if (debug) {
+            updateStack();
+            updateFungeSpace();
+        }
     };
     var updateStack = function() {
         var stackRoot = document.querySelector("#stack");
@@ -127,29 +139,40 @@ window.addEventListener("load", function() {
     };
     var updateFungeSpace = function() {
         var spaceRoot = document.querySelector("#funge-space");
-        var updateContents = true;
         activeCell = null;
-        if (updateContents) {
+        if (engine.fungeSpace.modified) {
+            // TODO implement a performance-friendly version, using canvas or something
             removeAllChildren(spaceRoot);
-            for (var y = engine.fungeSpace.minY; y <= engine.fungeSpace.maxY; y++) {
+            var minX = engine.fungeSpace.minX, minY = engine.fungeSpace.minY,
+                maxX = engine.fungeSpace.maxX, maxY = engine.fungeSpace.maxY,
+                ipX = engine.ip.x, ipY = engine.ip.y;
+            var rows = [];
+            for (var y = minY; y <= maxY; y++) {
                 var row = document.createElement("tr");
-                for (var x = engine.fungeSpace.minX; x <= engine.fungeSpace.maxX; x++) {
+                for (var x = minX; x <= maxX; x++) {
                     var cell = document.createElement("td");
-                    var pos = new Vec2(x, y);
                     cell.setAttribute("id", "cell-" + x + "-" + y);
-                    if (pos.equals(engine.ip)) {
+                    if (x === ipX && y === ipY) {
                         cell.classList.add("active");
                         activeCell = cell;
                     }
-                    var char = engine.fungeSpace.get(pos);
+                    var char = engine.fungeSpace.get(new Vec2(x, y));
                     char = Util.isPrintable(char) ? String.fromCharCode(char) : char;
                     setTextContent(cell, char);
                     row.appendChild(cell);
                 }
-                spaceRoot.appendChild(row);
+                rows.push(row);
             }
+            for (var row of rows)
+                spaceRoot.appendChild(row);
+            engine.fungeSpace.modified = false;
         } else {
-
+            [].slice.call(document.querySelectorAll("#funge-space td.active")).forEach(function(e) {
+                e.classList.remove("active");
+            });
+            activeCell = document.querySelector("#cell-" + engine.ip.x + "-" + engine.ip.y);
+            if (activeCell)
+                activeCell.classList.add("active");
         }
         repositionFungeSpace();
     };
@@ -221,17 +244,17 @@ window.addEventListener("load", function() {
             checkIcon.classList.remove("fa-square");
             checkIcon.classList.add("fa-check-square");
             debugContainer.style.display = "block";
-        } else {
-            checkIcon.classList.remove("fa-check-square");
-            checkIcon.classList.add("fa-square");
-            debugContainer.style.display = "none";
-            if (engine.keepRunning) {
+            if (!engine || engine.keepRunning) {
                 removeAllChildren(document.querySelector("#stack"));
-                removeAllChildren(document.querySelector("#funge-space"))
+                removeAllChildren(document.querySelector("#funge-space"));
             } else {
                 updateStack();
                 updateFungeSpace();
             }
+        } else {
+            checkIcon.classList.remove("fa-check-square");
+            checkIcon.classList.add("fa-square");
+            debugContainer.style.display = "none";
         }
     };
     var resizeFungeSpace = function() {
@@ -256,13 +279,19 @@ window.addEventListener("load", function() {
         document.querySelector("#input").value = "";
         document.querySelector("#args").value = "";
     });
+    document.querySelector("#show-about").addEventListener("click", function() {
+        showFix(aboutBox);
+    });
+    aboutBox.addEventListener("click", function(e) {
+        if (e.target.nodeName !== "A")
+            aboutBox.style.opacity = 0;
+    });
     document.querySelector("#go").addEventListener("click", function() {
-        executionArea.style.opacity = 1;
-        executionArea.style.display = "block";
+        showFix(executionArea);
         executionArea.style.zIndex = 2;
-        setupEngine();
         codingArea.style.opacity = 0;
         codingArea.style.zIndex = 1;
+        setupEngine();
         inputFocusInterval = setInterval(function() {
             if (interactive) {
                 document.querySelector("#interactive-input").focus();
@@ -275,8 +304,7 @@ window.addEventListener("load", function() {
             clearInterval(inputFocusInterval);
         executionArea.style.opacity = 0;
         executionArea.style.zIndex = 1;
-        codingArea.style.opacity = 1;
-        codingArea.style.display = "block";
+        showFix(codingArea);
         codingArea.style.zIndex = 2;
     });
     var delayAmount = document.querySelector("#delay-ms");

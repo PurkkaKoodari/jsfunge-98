@@ -1,0 +1,3 @@
+Options -Indexes
+RewriteEngine on
+RewriteRule ^$ /jsfunge-98/befunge98.html [R=302]

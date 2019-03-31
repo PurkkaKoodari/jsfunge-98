@@ -21,7 +21,7 @@
                     <option selected>Examples</option>
                 </select>
                 <button id="clear"><span class="fa fa-trash"></span>&nbsp;Clear</button>
-                <button id="about"><span class="fa fa-info-circle"></span>&nbsp;About</button>
+                <button id="show-about"><span class="fa fa-info-circle"></span>&nbsp;About</button>
             </div>
             <div>
                 <label for="code">Code:</label><br/>
@@ -68,6 +68,49 @@
                 <div>Stack:</div>
                 <div id="stack"></div>
             </div>
+        </div>
+    </div>
+    <div id="about">
+        <div class="dialog">
+            <div class="close">click anywhere to close</div>
+            <h2>About JSFunge-98</h2>
+            <p>Version 1.0</p>
+            <p>
+                JSFunge-98 is a standards-compliant Befunge-98 interpreter written in pure JavaScript.
+            </p>
+            <p>
+                JSFunge-98 implements the entire <a target="_blank" href="http://quadium.net/funge/spec98.html">Befunge-98 specification</a>.
+                Filesystem Funge is not implemented for obvious reasons. Concurrent Funge-98 support may come in the future.
+            </p>
+            <p>
+                JSFunge-98 has been tested against the <a target="_blank" href="https://github.com/Deewiant/Mycology/">Mycology test suite</a>,
+                and it passes all tests.
+            </p>
+            <p>
+                The following fingerprints are currently implemented:
+            </p>
+            <ul>
+                <li><code>MODU</code></li>
+                <li><code>NULL</code></li>
+                <li><code>ROMA</code></li>
+            </ul>
+            <h3>License</h3>
+            <p>Copyright &copy; PurkkaKoodari 2017</p>
+            <p>
+                Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+                documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+                the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+                and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+            </p>
+            <p>
+                The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+            </p>
+            <p>
+                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+                OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+                LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+                IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+            </p>
         </div>
     </div>
 </body>
