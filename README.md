@@ -10,9 +10,9 @@ JSFunge-98 is a standards-compliant Befunge-98 interpreter written in pure JavaS
   - `befunge98.js`: the interpreter control code.
   - `befunge98-engine.js`: the actual interpreter. This file contains everything needed for actually running the interpreter.
 
-##Features
+## Features
 
-###Browser interface
+### Browser interface
 
 JSFunge-98 has a browser interface that allows for:
 
@@ -25,7 +25,7 @@ JSFunge-98 has a browser interface that allows for:
   - debugging with stack and Funge-Space views and
   - entering command line arguments.
 
-###Interpreter
+### Interpreter
 
 JSFunge-98 implements the entire [Befunge-98 specification](http://quadium.net/funge/spec98.html). Filesystem
 Funge is not implemented for obvious reasons. Concurrent Funge-98 support may come in the future.
@@ -38,11 +38,11 @@ The following fingerprints are currently implemented:
   - `NULL`
   - `ROMA`
 
-##Known issues
+## Known issues
 
   - Input is not working yet.
 
-##Upcoming features
+## Upcoming features
 
   - Breakpoints.
   - Saving files.
